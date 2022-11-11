@@ -13,8 +13,9 @@ app.get('/products', async (_req, res) => {
   res.status(200).json(result);
 });
 
-app.get('/products/:id', async (_req, res) => {
-  const result = await model.productsModel.findAll();
+app.get('/products/:id', async (req, res) => {
+  const { id } = req.params;
+  const result = await model.productsModel.findById(id);
   res.status(200).json(result);
 });
 
