@@ -2,6 +2,7 @@ const productsService = require('../services/products.service');
 
 const HTTP_OK_STATUS = 200;
 const HTTP_NOT_FOUND_STATUS = 404;
+const HTTP_CREATE_STATUS = 201;
 // const HTTP_SERVER_ERROR_STATUS = 500;
 
 const getAllProducts = async (_req, res) => {
@@ -21,7 +22,14 @@ const getProductsById = async (req, res) => {
   res.status(HTTP_OK_STATUS).json(result.message);
 };
 
+const createProduct = async (req, res) => {
+  const { name } = req.body;
+  const result = await productsService.createProduct(name);
+  res.status(HTTP_CREATE_STATUS).json(result.message);
+};
+
 module.exports = {
   getAllProducts,
   getProductsById,
+  createProduct,
 };
