@@ -6,9 +6,10 @@ const { expect } = chai;
 chai.use(sinonChai);
 const productsService = require('../../../src/services/products.service');
 const productsController = require('../../../src/controllers/products.controller');
-const { allProducts } = require('../models/mocks/products.mocks');
+const { allProducts, newProduct } = require('../models/mocks/products.mocks');
 
 const HTTP_OK_STATUS = 200;
+const HTTP_CREATE_STATUS = 201;
 const HTTP_NOT_FOUND_STATUS = 404;
 
 describe('Testes da camada Controllers', function () {
@@ -68,6 +69,25 @@ describe('Testes da camada Controllers', function () {
 
       expect(res.status).to.have.been.calledWith(HTTP_NOT_FOUND_STATUS);
       expect(res.send).to.have.been.calledWith({ message: 'Product not found' });
+    });
+
+    afterEach(function () {
+      sinon.restore();
+    });
+  });
+
+  describe('Teste o endpoint que lida com a criação de um novo produto', function () {
+    it('Testa a função "createProduct"', async function () {
+      const res = {};
+      const req = { body: { name: newProduct.name } };
+      res.status = sinon.stub().returns(res);
+      res.json = sinon.stub().returns();
+      sinon.stub(productsService, 'createProduct')
+        .resolves({ type: null, message: newProduct });
+      await productsController.createProduct(req, res);
+
+      expect(res.status).to.have.been.calledWith(HTTP_CREATE_STATUS);
+      expect(res.json).to.have.been.calledWith(newProduct);
     });
 
     afterEach(function () {

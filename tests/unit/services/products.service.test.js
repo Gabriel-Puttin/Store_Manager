@@ -2,7 +2,7 @@ const { expect } = require('chai');
 const sinon = require('sinon');
 const { productsModel } = require('../../../src/models');
 const ProductsService = require('../../../src/services/products.service');
-const { allProducts } = require('../models/mocks/products.mocks');
+const { allProducts, newProduct } = require('../models/mocks/products.mocks');
 
 describe('Testes da camada Services', function () {
   describe('Teste da função que lida com a listagem de produtos', function () {
@@ -42,6 +42,20 @@ describe('Testes da camada Services', function () {
 
       expect(response.type).to.equal('Invalid Product');
       expect(response.message).to.equal('Product not found');
+    });
+
+    afterEach(function () {
+      sinon.restore();
+    });
+  });
+
+  describe('Teste da função que lida com a criação de um produto', function () {
+    it('Testa a função "createProduct"', async function () {
+      sinon.stub(productsModel, 'insertProduct').resolves(newProduct.id);
+      const response = await ProductsService.createProduct(newProduct.name);
+
+      expect(response.type).to.be.null;
+      expect(response.message).to.deep.equal(newProduct);
     });
 
     afterEach(function () {
