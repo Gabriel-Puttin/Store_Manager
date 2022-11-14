@@ -3,7 +3,6 @@ const productsService = require('../services/products.service');
 const HTTP_OK_STATUS = 200;
 const HTTP_NOT_FOUND_STATUS = 404;
 const HTTP_CREATE_STATUS = 201;
-// const HTTP_SERVER_ERROR_STATUS = 500;
 
 const getAllProducts = async (_req, res) => {
   const result = await productsService.getAllProducts();
