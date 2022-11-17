@@ -1,4 +1,5 @@
 const productsService = require('../services/products.service');
+const errorMap = require('../utils/errorMap');
 
 const HTTP_OK_STATUS = 200;
 const HTTP_NOT_FOUND_STATUS = 404;
@@ -27,8 +28,17 @@ const createProduct = async (req, res) => {
   res.status(HTTP_CREATE_STATUS).json(result.message);
 };
 
+const updateProduct = async (req, res) => {
+  const { id } = req.params;
+  const { name } = req.body;
+  const { type, message } = await productsService.updateProduct(name, Number(id));
+  if (type) return res.status(errorMap.mapError(type)).json({ message });
+  res.status(HTTP_OK_STATUS).json(message);
+};
+
 module.exports = {
   getAllProducts,
   getProductsById,
   createProduct,
+  updateProduct,
 };
