@@ -3,6 +3,7 @@ const sinon = require('sinon');
 const { salesModel } = require('../../../src/models');
 const salesService = require('../../../src/services/sales.service');
 const { newSales, products, wrongProducts } = require('./mocks/sales.mocks');
+const { allSales, allSalesById } = require('../models/mocks/sales.mocks');
 
 describe('Testes da camada Services', function () {
   describe('Teste da função que lida com a criação de uma venda', function () {
@@ -50,5 +51,44 @@ describe('Testes da camada Services', function () {
       expect(response.message).to.equal('Product not found');
     });
 
+  });
+
+  describe('Teste da função que lida com a busca de todas as venda', function () {
+    beforeEach(function () {
+      sinon.stub(salesModel, 'findAll').resolves(allSales);
+    })
+
+    afterEach(function () {
+      sinon.restore();
+    });
+
+    it('Testa a função "getAllSales"', async function () {
+      const response = await salesService.getAllSales();
+
+      expect(response.type).to.be.null;
+      expect(response.message).to.deep.equal(allSales);
+    });
+  });
+
+  describe('Teste da função que lida com a busca de todas as venda com base no mesmo ID', function () {
+    afterEach(function () {
+      sinon.restore();
+    });
+
+    it('Testa a função "getSalesById"', async function () {
+      sinon.stub(salesModel, 'findById').resolves(allSalesById);
+      const response = await salesService.getSalesById(1);
+
+      expect(response.type).to.be.null;
+      expect(response.message).to.deep.equal(allSalesById);
+    });
+
+    it('Testa a função "getSalesById" em caso de erro', async function () {
+      sinon.stub(salesModel, 'findById').resolves([]);
+      const response = await salesService.getSalesById(0);
+
+      expect(response.type).to.equal('SALES_NOT_FOUND');
+      expect(response.message).to.equal('Sale not found');
+    });
   });
 });
