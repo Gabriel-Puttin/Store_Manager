@@ -1,11 +1,13 @@
 const salesServices = require('../services/sales.service');
+const errorMap = require('../utils/errorMap');
 
 const HTTP_CREATE_STATUS = 201;
 
 const createSale = async (req, res) => {
   const arr = req.body;
-  const response = await salesServices.createNewSalesProducts(arr);
-  res.status(HTTP_CREATE_STATUS).json(response.message);
+  const { type, message } = await salesServices.createNewSalesProducts(arr);
+  if (type) return res.status(errorMap.mapError(type)).json({ message });
+  res.status(HTTP_CREATE_STATUS).json(message);
 };
 
 module.exports = {
