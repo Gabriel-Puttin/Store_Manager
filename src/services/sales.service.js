@@ -15,6 +15,21 @@ const createNewSalesProducts = async (arr) => {
   return { type: null, message: { id: saleId, itemsSold: arr } };
 };
 
+const getAllSales = async () => {
+  const sales = await model.salesModel.findAll();
+
+  return { type: null, message: sales };
+};
+
+const getSalesById = async (id) => {
+  const saleIdValidation = await salesValidations.validateSaleId(id);
+  if (saleIdValidation.type) return saleIdValidation;
+  const sale = await model.salesModel.findById(id);
+  return { type: null, message: sale };
+};
+
 module.exports = {
   createNewSalesProducts,
+  getAllSales,
+  getSalesById,
 };

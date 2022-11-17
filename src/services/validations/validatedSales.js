@@ -31,7 +31,16 @@ const validatedProductId = async (arr) => {
   return { type: null, message: '' };
 };
 
+const validateSaleId = async (id) => {
+  const result = await model.salesModel.findById(id);
+  if (result.length === 0) {
+    return { type: 'SALES_NOT_FOUND', message: 'Sale not found' };
+  }
+  return { type: null, message: '' };
+};
+
 module.exports = {
   validateQuantity,
   validatedProductId,
+  validateSaleId,
 };

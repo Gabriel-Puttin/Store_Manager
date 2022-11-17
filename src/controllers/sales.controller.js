@@ -1,6 +1,7 @@
 const salesServices = require('../services/sales.service');
 const errorMap = require('../utils/errorMap');
 
+const HTTP_OK_STATUS = 200;
 const HTTP_CREATE_STATUS = 201;
 
 const createSale = async (req, res) => {
@@ -10,6 +11,20 @@ const createSale = async (req, res) => {
   res.status(HTTP_CREATE_STATUS).json(message);
 };
 
+const getAllSales = async (_req, res) => {
+  const { message } = await salesServices.getAllSales();
+  res.status(HTTP_OK_STATUS).json(message);
+};
+
+const getSaleById = async (req, res) => {
+  const { id } = req.params;
+  const { type, message } = await salesServices.getSalesById(Number(id));
+  if (type) return res.status(errorMap.mapError(type)).json({ message });
+  res.status(HTTP_OK_STATUS).json(message);
+};
+
 module.exports = {
   createSale,
+  getAllSales,
+  getSaleById,
 };
