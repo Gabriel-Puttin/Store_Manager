@@ -51,4 +51,17 @@ describe('Testes da camada Models', function () {
       expect(response).to.deep.equal(allSalesById);
     });
   });
+
+  describe('Testa a remoção de uma venda no banco de dados', function () {
+    afterEach(function () {
+      sinon.restore();
+    });
+
+    it('Testa a função "deleteSale"', async function () {
+      sinon.stub(connection, 'execute').resolves([{ insertId: 1 }]);
+      const response = await salesModel.deleteSale(1);
+      expect(response).to.be.a('number');
+      expect(response).to.deep.equal(1);
+    });
+  });
 });

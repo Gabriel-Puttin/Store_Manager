@@ -11,6 +11,7 @@ const { allSales, allSalesById } = require('../models/mocks/sales.mocks');
 
 const HTTP_OK_STATUS = 200;
 const HTTP_CREATE_STATUS = 201;
+const HTTP_NO_CONTENT_STATUS = 204;
 const HTTP_NOT_FOUND_STATUS = 404;
 
 describe('Testes da camada Controllers', function () {
@@ -91,6 +92,37 @@ describe('Testes da camada Controllers', function () {
       sinon.stub(salesService, 'getSalesById')
         .resolves({ type: 'SALES_NOT_FOUND', message: 'Sale not found' });
       await salesController.getSaleById(req, res);
+
+      expect(res.status).to.have.been.calledWith(HTTP_NOT_FOUND_STATUS);
+      expect(res.json).to.have.been.calledWith({ message: 'Sale not found' });
+    });
+  });
+
+  describe('Teste o endpoint que lida com a remoção de uma venda', function () {
+    afterEach(function () {
+      sinon.restore();
+    });
+
+    it('Testa a função "deleteSale"', async function () {
+      const res = {};
+      const req = { params: { id: 1 } };
+      res.status = sinon.stub().returns(res);
+      res.end = sinon.stub().returns();
+      sinon.stub(salesService, 'deleteSale')
+        .resolves({ type: null, message: 1 });
+      await salesController.deleteSale(req, res);
+
+      expect(res.status).to.have.been.calledWith(HTTP_NO_CONTENT_STATUS);
+    });
+
+    it('Testa a função "deleteSale" em caso de erro', async function () {
+      const res = {};
+      const req = { params: { id: 0 } };
+      res.status = sinon.stub().returns(res);
+      res.json = sinon.stub().returns();
+      sinon.stub(salesService, 'deleteSale')
+        .resolves({ type: 'SALES_NOT_FOUND', message: 'Sale not found' });
+      await salesController.deleteSale(req, res);
 
       expect(res.status).to.have.been.calledWith(HTTP_NOT_FOUND_STATUS);
       expect(res.json).to.have.been.calledWith({ message: 'Sale not found' });

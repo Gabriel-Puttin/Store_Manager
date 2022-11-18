@@ -91,4 +91,26 @@ describe('Testes da camada Services', function () {
       expect(response.message).to.equal('Sale not found');
     });
   });
+
+  describe('Teste da função que lida com a remoção de uma venda com base no ID', function () {
+    afterEach(function () {
+      sinon.restore();
+    });
+
+    it('Testa a função "deleteSale"', async function () {
+      sinon.stub(salesModel, 'deleteSale').resolves(2);
+      const response = await salesService.deleteSale(2);
+
+      expect(response.type).to.be.null;
+      expect(response.message).to.deep.equal(2);
+    });
+
+    it('Testa a função "deleteSale" em caso de erro', async function () {
+      sinon.stub(salesModel, 'deleteSale').resolves(22);
+      const response = await salesService.deleteSale(22);
+
+      expect(response.type).to.equal('SALES_NOT_FOUND');
+      expect(response.message).to.equal('Sale not found');
+    });
+  });
 });
