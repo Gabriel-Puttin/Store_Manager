@@ -7,6 +7,7 @@ chai.use(sinonChai);
 const productsService = require('../../../src/services/products.service');
 const productsController = require('../../../src/controllers/products.controller');
 const { allProducts, newProduct } = require('../models/mocks/products.mocks');
+const { updatedProduct, wrongUpdatedProduct } = require('./mocks/products.mocks');
 
 const HTTP_OK_STATUS = 200;
 const HTTP_CREATE_STATUS = 201;
@@ -92,6 +93,38 @@ describe('Testes da camada Controllers', function () {
 
     afterEach(function () {
       sinon.restore();
+    });
+  });
+
+  describe('Teste o endpoint que lida com a atualização de um produto', function () {
+    afterEach(function () {
+      sinon.restore();
+    });
+
+    it('Testa a função "updateProduct"', async function () {
+      const res = { };
+      const req = { body: { name: updatedProduct.message.name }, params: { id: 1 } };
+      res.status = sinon.stub().returns(res);
+      res.json = sinon.stub().returns();
+      sinon.stub(productsService, 'updateProduct')
+        .resolves(updatedProduct);
+      await productsController.updateProduct(req, res);
+
+      expect(res.status).to.have.been.calledWith(HTTP_OK_STATUS);
+      expect(res.json).to.have.been.calledWith(updatedProduct.message);
+    });
+
+    it('Testa a função "updateProduct" em caso de erro', async function () {
+      const res = {};
+      const req = { body: { name: updatedProduct.message.name }, params: { id: 0 } };
+      res.status = sinon.stub().returns(res);
+      res.json = sinon.stub().returns();
+      sinon.stub(productsService, 'updateProduct')
+        .resolves(wrongUpdatedProduct);
+      await productsController.updateProduct(req, res);
+
+      expect(res.status).to.have.been.calledWith(HTTP_NOT_FOUND_STATUS);
+      expect(res.json).to.have.been.calledWith({ message: wrongUpdatedProduct.message });
     });
   });
 });

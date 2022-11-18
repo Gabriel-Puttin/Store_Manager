@@ -18,7 +18,12 @@ const newProduct = {
   "name": "Espada Excalibur"
 }
 
+const updatedProduct = {
+  name: "Lança de odin"
+};
+
 module.exports = {
   allProducts,
   newProduct,
+  updatedProduct,
 };
