@@ -28,8 +28,17 @@ const getSalesById = async (id) => {
   return { type: null, message: sale };
 };
 
+const deleteSale = async (saleId) => {
+  const verifySaleId = await salesValidations.validateSaleId(saleId);
+  if (verifySaleId.type) return verifySaleId;
+
+  const id = await model.salesModel.deleteSale(saleId);
+  return { type: null, message: id };
+};
+
 module.exports = {
   createNewSalesProducts,
   getAllSales,
   getSalesById,
+  deleteSale,
 };
