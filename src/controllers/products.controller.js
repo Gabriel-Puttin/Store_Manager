@@ -2,6 +2,7 @@ const productsService = require('../services/products.service');
 const errorMap = require('../utils/errorMap');
 
 const HTTP_OK_STATUS = 200;
+const HTTP_NO_CONTENT_STATUS = 204;
 const HTTP_NOT_FOUND_STATUS = 404;
 const HTTP_CREATE_STATUS = 201;
 
@@ -36,9 +37,17 @@ const updateProduct = async (req, res) => {
   res.status(HTTP_OK_STATUS).json(message);
 };
 
+const deleteProduct = async (req, res) => {
+  const { id } = req.params;
+  const { type, message } = await productsService.deleteProduct(Number(id));
+  if (type) return res.status(errorMap.mapError(type)).json({ message });
+  res.status(HTTP_NO_CONTENT_STATUS).end();
+};
+
 module.exports = {
   getAllProducts,
   getProductsById,
   createProduct,
   updateProduct,
+  deleteProduct,
 };
