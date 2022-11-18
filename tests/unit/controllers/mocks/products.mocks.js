@@ -11,7 +11,13 @@ const wrongUpdatedProduct = {
   message: 'Product not found'
 };
 
+const deletedProduct = {
+  type: null,
+  message: 1,
+};
+
 module.exports = {
   updatedProduct,
   wrongUpdatedProduct,
+  deletedProduct,
 };

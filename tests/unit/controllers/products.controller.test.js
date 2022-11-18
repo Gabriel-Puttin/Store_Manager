@@ -7,9 +7,10 @@ chai.use(sinonChai);
 const productsService = require('../../../src/services/products.service');
 const productsController = require('../../../src/controllers/products.controller');
 const { allProducts, newProduct } = require('../models/mocks/products.mocks');
-const { updatedProduct, wrongUpdatedProduct } = require('./mocks/products.mocks');
+const { updatedProduct, wrongUpdatedProduct, deletedProduct } = require('./mocks/products.mocks');
 
 const HTTP_OK_STATUS = 200;
+const HTTP_NO_CONTENT_STATUS = 204;
 const HTTP_CREATE_STATUS = 201;
 const HTTP_NOT_FOUND_STATUS = 404;
 
@@ -122,6 +123,37 @@ describe('Testes da camada Controllers', function () {
       sinon.stub(productsService, 'updateProduct')
         .resolves(wrongUpdatedProduct);
       await productsController.updateProduct(req, res);
+
+      expect(res.status).to.have.been.calledWith(HTTP_NOT_FOUND_STATUS);
+      expect(res.json).to.have.been.calledWith({ message: wrongUpdatedProduct.message });
+    });
+  });
+
+  describe('Teste o endpoint que lida com a remoção de um produto', function () {
+    afterEach(function () {
+      sinon.restore();
+    });
+
+    it('Testa a função "deleteProduct"', async function () {
+      const res = {};
+      const req = { params: { id: 1 } };
+      res.status = sinon.stub().returns(res);
+      res.end = sinon.stub().returns();
+      sinon.stub(productsService, 'deleteProduct')
+        .resolves(deletedProduct);
+      await productsController.deleteProduct(req, res);
+
+      expect(res.status).to.have.been.calledWith(HTTP_NO_CONTENT_STATUS);
+    });
+
+    it('Testa a função "deleteProduct" em caso de erro', async function () {
+      const res = {};
+      const req = { params: { id: 10 } };
+      res.status = sinon.stub().returns(res);
+      res.json = sinon.stub().returns();
+      sinon.stub(productsService, 'deleteProduct')
+        .resolves(wrongUpdatedProduct);
+      await productsController.deleteProduct(req, res);
 
       expect(res.status).to.have.been.calledWith(HTTP_NOT_FOUND_STATUS);
       expect(res.json).to.have.been.calledWith({ message: wrongUpdatedProduct.message });

@@ -69,4 +69,20 @@ describe('Testes da camada Models', function () {
       expect(response).to.deep.equal(1);
     });
   });
+
+  describe('Testa a remoção de um produto', function () {
+    before(async function () {
+      sinon.stub(connection, 'execute').resolves([{ insertId: 1 }]);
+    });
+
+    after(async function () {
+      connection.execute.restore();
+    });
+
+    it('Testa a função "deleteProduct"', async function () {
+      const response = await productsModel.deleteProduct(1);
+      expect(response).to.be.a('number');
+      expect(response).to.deep.equal(1);
+    });
+  });
 });

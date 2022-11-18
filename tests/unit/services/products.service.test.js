@@ -84,4 +84,26 @@ describe('Testes da camada Services', function () {
       expect(response.message).to.deep.equal('Product not found');
     });
   });
+
+  describe('Teste da função que lida com a remoção de um produto', function () {
+    afterEach(function () {
+      sinon.restore();
+    });
+
+    it('Testa a função "deleteProduct"', async function () {
+      sinon.stub(productsModel, 'deleteProduct').resolves(1);
+      const response = await ProductsService.deleteProduct(1);
+
+      expect(response.type).to.be.null;
+      expect(response.message).to.deep.equal(1);
+    });
+
+    it('Testa a função "deleteProduct" em caso de erro', async function () {
+      sinon.stub(productsModel, 'deleteProduct').resolves(10);
+      const response = await ProductsService.deleteProduct(10);
+
+      expect(response.type).to.equal('PRODUCT_NOT_FOUND');
+      expect(response.message).to.deep.equal('Product not found');
+    });
+  });
 });
