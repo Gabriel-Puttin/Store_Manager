@@ -7,7 +7,7 @@ chai.use(sinonChai);
 const salesController = require('../../../src/controllers/sales.controller');
 const salesService = require('../../../src/services/sales.service');
 const { products, newSales, wrongProducts } = require('../services/mocks/sales.mocks')
-const { allSales, allSalesById } = require('../models/mocks/sales.mocks');
+const { allSales, allSalesById, upProducts } = require('../models/mocks/sales.mocks');
 
 const HTTP_OK_STATUS = 200;
 const HTTP_CREATE_STATUS = 201;
@@ -123,6 +123,38 @@ describe('Testes da camada Controllers', function () {
       sinon.stub(salesService, 'deleteSale')
         .resolves({ type: 'SALES_NOT_FOUND', message: 'Sale not found' });
       await salesController.deleteSale(req, res);
+
+      expect(res.status).to.have.been.calledWith(HTTP_NOT_FOUND_STATUS);
+      expect(res.json).to.have.been.calledWith({ message: 'Sale not found' });
+    });
+  });
+
+  describe('Teste o endpoint que lida com a atualização de vendas', function () {
+    afterEach(function () {
+      sinon.restore();
+    });
+
+    it('Testa a função "updateSales"', async function () {
+      const res = {};
+      const req = { params: { id: 1 }, body: { upProducts } };
+      res.status = sinon.stub().returns(res);
+      res.json = sinon.stub().returns();
+      sinon.stub(salesService, 'updateSales')
+        .resolves({ type: null, message: upProducts });
+      await salesController.updateSales(req, res);
+
+      expect(res.status).to.have.been.calledWith(HTTP_OK_STATUS);
+      expect(res.json).to.have.been.calledWith({ saleId: 1, itemsUpdated: upProducts });
+    });
+
+    it('Testa a função "deleteSale" em caso de erro', async function () {
+      const res = {};
+      const req = { params: { id: 0 }, body: { upProducts } };
+      res.status = sinon.stub().returns(res);
+      res.json = sinon.stub().returns();
+      sinon.stub(salesService, 'updateSales')
+        .resolves({ type: 'SALES_NOT_FOUND', message: 'Sale not found' });
+      await salesController.updateSales(req, res);
 
       expect(res.status).to.have.been.calledWith(HTTP_NOT_FOUND_STATUS);
       expect(res.json).to.have.been.calledWith({ message: 'Sale not found' });

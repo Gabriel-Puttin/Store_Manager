@@ -3,7 +3,7 @@ const sinon = require('sinon');
 const { salesModel } = require('../../../src/models');
 const salesService = require('../../../src/services/sales.service');
 const { newSales, products, wrongProducts } = require('./mocks/sales.mocks');
-const { allSales, allSalesById } = require('../models/mocks/sales.mocks');
+const { allSales, allSalesById, upProducts } = require('../models/mocks/sales.mocks');
 
 describe('Testes da camada Services', function () {
   describe('Teste da função que lida com a criação de uma venda', function () {
@@ -111,6 +111,20 @@ describe('Testes da camada Services', function () {
 
       expect(response.type).to.equal('SALES_NOT_FOUND');
       expect(response.message).to.equal('Sale not found');
+    });
+  });
+
+  describe('Teste da função que lida com a atualização de vendas com base no ID', function () {
+    afterEach(function () {
+      sinon.restore();
+    });
+
+    it('Testa a função "updateSales"', async function () {
+      sinon.stub(salesModel, 'updateSales').resolves(1);
+      const response = await salesService.updateSales(upProducts, 1);
+
+      expect(response.type).to.be.null;
+      expect(response.message).to.deep.equal(upProducts);
     });
   });
 });

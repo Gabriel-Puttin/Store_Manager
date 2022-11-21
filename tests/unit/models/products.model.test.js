@@ -3,7 +3,11 @@ const { expect } = require('chai');
 
 const { productsModel } = require('../../../src/models');
 const connection = require('../../../src/models/connection');
-const { allProducts, newProduct, updatedProduct } = require('./mocks/products.mocks');
+const {
+  allProducts,
+  newProduct,
+  updatedProduct,
+  searchedProducts } = require('./mocks/products.mocks');
 
 describe('Testes da camada Models', function () {
   describe('Testa a listagem de todos os produtos', function () {
@@ -83,6 +87,22 @@ describe('Testes da camada Models', function () {
       const response = await productsModel.deleteProduct(1);
       expect(response).to.be.a('number');
       expect(response).to.deep.equal(1);
+    });
+  });
+
+  describe('Testa a busca de produtos por caracteres semelhantes', function () {
+    before(async function () {
+      sinon.stub(connection, 'execute').resolves([searchedProducts]);
+    });
+
+    after(async function () {
+      connection.execute.restore();
+    });
+
+    it('Testa a função "searchProductByName"', async function () {
+      const response = await productsModel.searchProductByName('c');
+      expect(response).to.be.a('array');
+      expect(response).to.deep.equal(searchedProducts);
     });
   });
 });

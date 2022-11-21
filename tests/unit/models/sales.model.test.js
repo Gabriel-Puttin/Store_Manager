@@ -3,7 +3,7 @@ const { expect } = require('chai');
 
 const { salesModel } = require('../../../src/models');
 const connection = require('../../../src/models/connection');
-const { addProducts, allSales, allSalesById } = require('./mocks/sales.mocks');
+const { addProducts, allSales, allSalesById, upProducts } = require('./mocks/sales.mocks');
 
 describe('Testes da camada Models', function () {
   describe('Testa a criação de uma nova venda', function () {
@@ -60,6 +60,19 @@ describe('Testes da camada Models', function () {
     it('Testa a função "deleteSale"', async function () {
       sinon.stub(connection, 'execute').resolves([{ insertId: 1 }]);
       const response = await salesModel.deleteSale(1);
+      expect(response).to.be.a('number');
+      expect(response).to.deep.equal(1);
+    });
+  });
+
+  describe('Testa a atualização das vendas no banco de dados', function () {
+    afterEach(function () {
+      sinon.restore();
+    });
+
+    it('Testa a função "updateSales"', async function () {
+      sinon.stub(connection, 'execute').resolves([{ insertId: 1 }]);
+      const response = await salesModel.updateSales(upProducts, 1);
       expect(response).to.be.a('number');
       expect(response).to.deep.equal(1);
     });

@@ -6,7 +6,7 @@ const { expect } = chai;
 chai.use(sinonChai);
 const productsService = require('../../../src/services/products.service');
 const productsController = require('../../../src/controllers/products.controller');
-const { allProducts, newProduct } = require('../models/mocks/products.mocks');
+const { allProducts, newProduct, searchedProducts } = require('../models/mocks/products.mocks');
 const { updatedProduct, wrongUpdatedProduct, deletedProduct } = require('./mocks/products.mocks');
 
 const HTTP_OK_STATUS = 200;
@@ -157,6 +157,25 @@ describe('Testes da camada Controllers', function () {
 
       expect(res.status).to.have.been.calledWith(HTTP_NOT_FOUND_STATUS);
       expect(res.json).to.have.been.calledWith({ message: wrongUpdatedProduct.message });
+    });
+  });
+
+  describe('Teste o endpoint que lida com a busca de produtos por caracteres semelhantes', function () {
+    afterEach(function () {
+      sinon.restore();
+    });
+
+    it('Testa a função "searchProducts"', async function () {
+      const res = {};
+      const req = { query: { q: 'c' } };
+      res.status = sinon.stub().returns(res);
+      res.json = sinon.stub().returns();
+      sinon.stub(productsService, 'searchProducts')
+        .resolves(searchedProducts);
+      await productsController.searchProducts(req, res);
+
+      expect(res.status).to.have.been.calledWith(HTTP_OK_STATUS);
+      // expect(res.json).to.have.been.calledWith({ message: searchedProducts });
     });
   });
 });
