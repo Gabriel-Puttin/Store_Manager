@@ -52,7 +52,11 @@ docker exec -it store_manager bash
 ```
 npm install
 ```
-6. Rode a aplicação
+6. Crie e gere o banco de dados no container
+```
+npm run migration && npm run seed
+```
+7. Rode a aplicação
 ```
 npm start
 ```
